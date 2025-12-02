@@ -1,91 +1,26 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import UserProfile, Skill, ProfileComparison, SWOTAnalysis, CareerRoadmap
+from .models import FreelancerProfile, RoadmapMilestone, RankingSnapshot
 
-class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=8)
-
+class FreelancerProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password']
-
-    def create(self, validated_data):
-        user = User(
-            username=validated_data['username'],
-            email=validated_data.get('email')
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
-
-class SkillSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Skill
-        fields = ['id', 'name']
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    skills = SkillSerializer(many=True, read_only=True)
-    skill_ids = serializers.ListField(
-        child=serializers.IntegerField(),
-        write_only=True,
-        required=False
-    )
-    username = serializers.CharField(source='user.username', read_only=True)
-    email = serializers.EmailField(source='user.email', read_only=True)
-    
-    class Meta:
-        model = UserProfile
+        model = FreelancerProfile
         fields = [
-            'id', 'username', 'email', 'skills', 'skill_ids', 
-            'portfolio', 'bio', 'pricing', 'pseudo_rank', 'rating'
+            "user", "profile_completeness", "profile_views", "proposal_success_rate",
+            "job_invitations", "hourly_rate", "skills", "portfolio_items",
+            "repeat_clients_rate", "updated_at"
         ]
-    
-    def create(self, validated_data):
-        skill_ids = validated_data.pop('skill_ids', [])
-        # Ensure a single profile per user; update existing instead of duplicating
-        user = validated_data.get('user')
-        profile, created = UserProfile.objects.get_or_create(
-            user=user,
-            defaults=validated_data
-        )
-        if not created:
-            for attr, value in validated_data.items():
-                setattr(profile, attr, value)
-            profile.save()
 
-        if skill_ids is not None:
-            profile.skills.set(skill_ids)
-
-        return profile
-    
-    def update(self, instance, validated_data):
-        skill_ids = validated_data.pop('skill_ids', None)
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-        
-        if skill_ids is not None:
-            instance.skills.set(skill_ids)
-        
-        return instance
-
-class ProfileComparisonSerializer(serializers.ModelSerializer):
-    user_profile_name = serializers.CharField(source='user_profile.user.username', read_only=True)
-    compare_with_name = serializers.CharField(source='compare_with.user.username', read_only=True)
-    
+class RoadmapMilestoneSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProfileComparison
-        fields = ['id', 'user_profile', 'user_profile_name', 'compare_with', 
-                 'compare_with_name', 'comparison_score', 'created_at']
+        model = RoadmapMilestone
+        fields = [
+            "id", "user", "title", "description", "estimated_effort",
+            "order", "completed", "created_at", "updated_at"
+        ]
 
-class SWOTAnalysisSerializer(serializers.ModelSerializer):
+class RankingSnapshotSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SWOTAnalysis
-        fields = ['id', 'user_profile', 'strengths', 'weaknesses', 
-                 'opportunities', 'threats', 'created_at', 'updated_at']
-
-class CareerRoadmapSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CareerRoadmap
-        fields = ['id', 'user_profile', 'steps', 'visibility_boost', 
-                 'created_at', 'updated_at']
+        model = RankingSnapshot
+        fields = [
+            "id", "user", "value", "breakdown", "created_at"
+        ]

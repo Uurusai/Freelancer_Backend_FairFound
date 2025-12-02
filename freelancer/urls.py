@@ -19,6 +19,15 @@ from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
-   path('admin/', admin.site.urls),
-    path('', include('freelancer_api.urls')),
+    path("admin/", admin.site.urls),
+    path("api/v1/auth/", include("accounts.urls")),
+    path("api/v1/users/", include("account.user_urls")),
+    path("api/v1/freelancers/", include("freelancer_api.urls")),
+    path("api/v1/comparisons/", include("comparisons.urls")),
+    path("api/v1/sentiment/", include("sentiments.urls")),
+    path("api/v1/mentorship/", include("mentorship.urls")),
+    path("api/v1/industries/", include("industries.urls")),
+    path("api/v1/core/", include("core.urls")),
+    # Health check
+    path("api/v1/health/", include("core.health_urls"))
 ]

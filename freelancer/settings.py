@@ -39,7 +39,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'insecure-dev-key-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -56,6 +56,13 @@ INSTALLED_APPS = [
     'freelancer_api',
       'corsheaders',
     'rest_framework_simplejwt',
+     "account",
+    "freelancer_api",
+    "comparisons",
+    "sentiments",
+    "mentorship",
+    "industries",
+    "core",
 ]
 
 REST_FRAMEWORK = {
@@ -86,7 +93,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'freelancer.urls'
+ROOT_URLCONF = 'fairfound.urls'
 
 TEMPLATES = [
     {
@@ -103,7 +110,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'freelancer.wsgi.application'
+WSGI_APPLICATION = 'fairfound.wsgi.application'
 
 
 # Database

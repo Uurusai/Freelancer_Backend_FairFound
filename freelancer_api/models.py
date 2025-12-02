@@ -1,61 +1,50 @@
+import uuid
 from django.db import models
-from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 
-class Skill(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    
+class FreelancerProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
+    profile_completeness = models.PositiveSmallIntegerField(default=0)
+    profile_views = models.PositiveIntegerField(default=0)
+    proposal_success_rate = models.PositiveSmallIntegerField(default=0)
+    job_invitations = models.PositiveIntegerField(default=0)
+    hourly_rate = models.PositiveIntegerField(default=0)
+    skills = ArrayField(models.CharField(max_length=60), default=list, blank=True)
+    portfolio_items = models.PositiveSmallIntegerField(default=0)
+    repeat_clients_rate = models.PositiveSmallIntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
-        return self.name
+        return f'Profile of {self.user.email}'
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
-    skills = models.ManyToManyField(Skill, blank=True)
-    portfolio = models.URLField(blank=True, null=True)
-    bio = models.TextField(blank=True)
-    pricing = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    pseudo_rank = models.IntegerField(default=0)
-    rating = models.DecimalField(
-        max_digits=3, 
-        decimal_places=2, 
-        validators=[MinValueValidator(0), MaxValueValidator(5)],
-        blank=True, 
-        null=True
-    )
-    
-    def __str__(self):
-        return f"{self.user.username}'s Profile"
-
-class ProfileComparison(models.Model):
-    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='comparisons_made')
-    compare_with = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='compared_by_others')
-    comparison_score = models.IntegerField(default=0)
+class RoadmapMilestone(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="roadmap_milestones")
+    title = models.CharField(max_length=160)
+    description = models.TextField()
+    estimated_effort = models.CharField(max_length=40)
+    completed = models.BooleanField(default=False)
+    order = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
-    
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
-        unique_together = ['user_profile', 'compare_with']
-    
-    def __str__(self):
-        return f"{self.user_profile.user.username} vs {self.compare_with.user.username}"
+        unique_together = ("user", "order")
+        ordering = ["order"]
 
-class SWOTAnalysis(models.Model):
-    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='swot_analysis')
-    strengths = models.TextField(blank=True)
-    weaknesses = models.TextField(blank=True)
-    opportunities = models.TextField(blank=True)
-    threats = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
     def __str__(self):
-        return f"SWOT Analysis for {self.user_profile.user.username}"
+        return self.title
 
-class CareerRoadmap(models.Model):
-    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='career_roadmap')
-    steps = models.TextField(help_text="JSON string or text describing career steps")
-    visibility_boost = models.BooleanField(default=False)
+class RankingSnapshot(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="ranking_snapshots")
+    value = models.PositiveSmallIntegerField()
+    breakdown = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
+
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self):
-        return f"Career Roadmap for {self.user_profile.user.username}"
+        return f'Ranking for {self.user.email} at {self.created_at}'
