@@ -10,13 +10,14 @@ from .serializers import (
 from django.shortcuts import get_object_or_404
 
 class MyProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
-        profile = get_object_or_404(FreelancerProfile, user=request.user)
+        profile, _ = FreelancerProfile.objects.get_or_create(user=request.user)
         serializer = FreelancerProfileSerializer(profile)
         return Response(serializer.data)
 
     def patch(self, request):
-        profile = get_object_or_404(FreelancerProfile, user=request.user)
+        profile, _ = FreelancerProfile.objects.get_or_create(user=request.user)
         serializer = FreelancerProfileSerializer(profile, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
