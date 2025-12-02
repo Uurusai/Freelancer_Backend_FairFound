@@ -20,14 +20,14 @@ from django.urls import path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/auth/", include("account.urls")),
-   # path("api/v1/users/", include("account.user_urls")),
-    path("api/v1/freelancers/", include("freelancer_api.urls")),
-    path("api/v1/comparisons/", include("comparisons.urls")),
-    path("api/v1/sentiment/", include("sentiments.urls")),
-    path("api/v1/mentorship/", include("mentorship.urls")),
-    path("api/v1/industries/", include("industries.urls")),
-    path("api/v1/core/", include("core.urls")),
+    path("api/auth/", include("account.urls")),
+    # path("api/users/", include("account.user_urls")),
+    path("api/freelancers/", include("freelancer_api.urls")),
+    path("api/comparisons/", include("comparisons.urls")),
+    path("api/sentiment/", include("sentiments.urls")),
+    path("api/mentorship/", include("mentorship.urls")),
+    path("api/industries/", include("industries.urls")),
+    path("api/core/", include("core.urls")),
     # Health check
-    path("api/v1/health/", include("core.health_urls"))
+    path("api/health/", include("core.health_urls"))
 ]

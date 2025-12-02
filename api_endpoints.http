@@ -1,15 +1,15 @@
 ### Health
-GET http://localhost:8000/api/v1/health/
+GET http://localhost:8000/api/health/
 
 ### Auth
-POST http://localhost:8000/api/v1/auth/register/
+POST http://localhost:8000/api/auth/register/
 Content-Type: application/json
 {
   "name": "Test User",
   "email": "testuser@example.com",
   "password": "SecurePassword123"
 }
-POST http://localhost:8000/api/v1/auth/login/
+POST http://localhost:8000/api/auth/login/
 Content-Type: application/json
 {
   "email": "testuser@example.com",
@@ -17,27 +17,27 @@ Content-Type: application/json
 }
 
 ### User
-GET http://localhost:8000/api/v1/users/{user_id}/
+GET http://localhost:8000/api/users/{user_id}/
 Authorization: Bearer {{authToken}}
-PATCH http://localhost:8000/api/v1/users/me/
+PATCH http://localhost:8000/api/users/me/
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 {
   "name": "Test NewName"
 }
-PATCH http://localhost:8000/api/v1/users/me/industry/
+PATCH http://localhost:8000/api/users/me/industry/
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 {
   "industry": "Freelancer"
 }
-GET http://localhost:8000/api/v1/users/me/info/
+GET http://localhost:8000/api/users/me/info/
 Authorization: Bearer {{authToken}}
 
 ### Freelancer Profile
-GET http://localhost:8000/api/v1/freelancers/me/profile/
+GET http://localhost:8000/api/freelancers/me/profile/
 Authorization: Bearer {{authToken}}
-PATCH http://localhost:8000/api/v1/freelancers/me/profile/
+PATCH http://localhost:8000/api/freelancers/me/profile/
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 {
@@ -45,17 +45,17 @@ Content-Type: application/json
 }
 
 ### Ranking
-GET http://localhost:8000/api/v1/freelancers/me/ranking/
+GET http://localhost:8000/api/freelancers/me/ranking/
 Authorization: Bearer {{authToken}}
-POST http://localhost:8000/api/v1/freelancers/me/ranking/save/
+POST http://localhost:8000/api/freelancers/me/ranking/save/
 Authorization: Bearer {{authToken}}
-GET http://localhost:8000/api/v1/freelancers/me/ranking/history/
+GET http://localhost:8000/api/freelancers/me/ranking/history/
 Authorization: Bearer {{authToken}}
 
 ### Roadmap
-GET http://localhost:8000/api/v1/freelancers/me/roadmap/
+GET http://localhost:8000/api/freelancers/me/roadmap/
 Authorization: Bearer {{authToken}}
-POST http://localhost:8000/api/v1/freelancers/me/roadmap/
+POST http://localhost:8000/api/freelancers/me/roadmap/
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 {
@@ -64,23 +64,23 @@ Content-Type: application/json
   "estimated_effort": "3 days",
   "order": 1
 }
-PATCH http://localhost:8000/api/v1/freelancers/me/roadmap/{uuid}/
+PATCH http://localhost:8000/api/freelancers/me/roadmap/{uuid}/
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 {
   "completed": true
 }
-DELETE http://localhost:8000/api/v1/freelancers/me/roadmap/{uuid}/
+DELETE http://localhost:8000/api/freelancers/me/roadmap/{uuid}/
 Authorization: Bearer {{authToken}}
-POST http://localhost:8000/api/v1/freelancers/me/roadmap/{uuid}/toggle/
+POST http://localhost:8000/api/freelancers/me/roadmap/{uuid}/toggle/
 Authorization: Bearer {{authToken}}
-GET http://localhost:8000/api/v1/freelancers/me/dashboard/
+GET http://localhost:8000/api/freelancers/me/dashboard/
 Authorization: Bearer {{authToken}}
 
 ### Comparison
-GET http://localhost:8000/api/v1/comparisons/me/comparisons/?role=frontend
+GET http://localhost:8000/api/comparisons/me/comparisons/?role=frontend
 Authorization: Bearer {{authToken}}
-POST http://localhost:8000/api/v1/comparisons/me/comparisons/
+POST http://localhost:8000/api/comparisons/me/comparisons/
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 {
@@ -95,33 +95,33 @@ Content-Type: application/json
     "repeat_clients_rate": 30
   }
 }
-DELETE http://localhost:8000/api/v1/comparisons/me/comparisons/{uuid}/
+DELETE http://localhost:8000/api/comparisons/me/comparisons/{uuid}/
 Authorization: Bearer {{authToken}}
-DELETE http://localhost:8000/api/v1/comparisons/me/comparisons/
+DELETE http://localhost:8000/api/comparisons/me/comparisons/
 Authorization: Bearer {{authToken}}
 
 ### Sentiment (Feedback)
-GET http://localhost:8000/api/v1/sentiment/me/feedback/
+GET http://localhost:8000/api/sentiment/me/feedback/
 Authorization: Bearer {{authToken}}
-POST http://localhost:8000/api/v1/sentiment/me/feedback/
+POST http://localhost:8000/api/sentiment/me/feedback/
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 {
   "text": "Great client delivery!"
 }
-DELETE http://localhost:8000/api/v1/sentiment/me/feedback/{uuid}/
+DELETE http://localhost:8000/api/sentiment/me/feedback/{uuid}/
 Authorization: Bearer {{authToken}}
-DELETE http://localhost:8000/api/v1/sentiment/me/feedback/
+DELETE http://localhost:8000/api/sentiment/me/feedback/
 Authorization: Bearer {{authToken}}
-GET http://localhost:8000/api/v1/sentiment/me/feedback/aggregate/
+GET http://localhost:8000/api/sentiment/me/feedback/aggregate/
 Authorization: Bearer {{authToken}}
-GET http://localhost:8000/api/v1/sentiment/me/feedback/export/?format=csv
+GET http://localhost:8000/api/sentiment/me/feedback/export/?format=csv
 Authorization: Bearer {{authToken}}
 
 ### Mentorship
-GET http://localhost:8000/api/v1/mentorship/requests/?mine=true
+GET http://localhost:8000/api/mentorship/requests/?mine=true
 Authorization: Bearer {{authToken}}
-POST http://localhost:8000/api/v1/mentorship/requests/
+POST http://localhost:8000/api/mentorship/requests/
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 {
@@ -129,27 +129,27 @@ Content-Type: application/json
   "context": "Need help scaling components",
   "preferred_expertise": ["Frontend", "Performance"]
 }
-GET http://localhost:8000/api/v1/mentorship/requests/{uuid}/
+GET http://localhost:8000/api/mentorship/requests/{uuid}/
 Authorization: Bearer {{authToken}}
-PATCH http://localhost:8000/api/v1/mentorship/requests/{uuid}/
+PATCH http://localhost:8000/api/mentorship/requests/{uuid}/
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 {
   "status": "in_progress"
 }
-POST http://localhost:8000/api/v1/mentorship/requests/{uuid}/messages/
+POST http://localhost:8000/api/mentorship/requests/{uuid}/messages/
 Authorization: Bearer {{authToken}}
 Content-Type: application/json
 {
   "text": "Thanks for advice!"
 }
-GET http://localhost:8000/api/v1/mentorship/dashboard/requests/?status=pending
+GET http://localhost:8000/api/mentorship/dashboard/requests/?status=pending
 Authorization: Bearer {{authToken}}
 
 ### Industries
-GET http://localhost:8000/api/v1/industries/
-GET http://localhost:8000/api/v1/industries/freelancer/
+GET http://localhost:8000/api/industries/
+GET http://localhost:8000/api/industries/freelancer/
 
 ### Suggestions
-GET http://localhost:8000/api/v1/core/freelancers/suggestions/?role=frontend&limit=5
+GET http://localhost:8000/api/core/freelancers/suggestions/?role=frontend&limit=5
 
