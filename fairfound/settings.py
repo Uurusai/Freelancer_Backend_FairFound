@@ -118,7 +118,7 @@ WSGI_APPLICATION = 'fairfound.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'freelancer_db'),
+        'NAME': os.getenv('DB_NAME', 'fairfound'),
         'USER': os.getenv('DB_USER', 'myuser'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'mypassword'),
         'HOST': os.getenv('DB_HOST', 'localhost'),
@@ -167,3 +167,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+AUTH_USER_MODEL = "account.User"
