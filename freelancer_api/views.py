@@ -19,6 +19,20 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return UserProfile.objects.filter(user=self.request.user)
     
+    # added
+    def destroy(self, request, *args, **kwargs):
+        pk = kwargs.get("pk")
+        instance = get_object_or_404(UserProfile, pk=pk)
+
+        if instance.user != request.user:
+            return Response(
+                {"detail": "You cannot delete another user's profile."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    #added end
+    
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 

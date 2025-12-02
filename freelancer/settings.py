@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'freelancer_api',
+      'corsheaders',
+    'rest_framework_simplejwt',
 ]
 
 REST_FRAMEWORK = {
