@@ -1,11 +1,15 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.shortcuts import get_object_or_404
+from rest_framework_simplejwt.tokens import RefreshToken
 from .models import UserProfile, ProfileComparison, SWOTAnalysis, CareerRoadmap, Skill
 from .serializers import (
     UserProfileSerializer, ProfileComparisonSerializer,
-    SWOTAnalysisSerializer, CareerRoadmapSerializer, SkillSerializer
+    SWOTAnalysisSerializer, CareerRoadmapSerializer, SkillSerializer,
+    RegisterSerializer
 )
 
 class UserProfileViewSet(viewsets.ModelViewSet):
@@ -142,3 +146,49 @@ class RankingViewSet(viewsets.ViewSet):
             score += 20
         
         return score
+
+
+class SignUpView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        # Create associated profile
+        UserProfile.objects.create(user=user)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'user_id': user.id,
+            'username': user.username,
+            'access': str(refresh.access_token),
+            'refresh': str(refresh)
+        }, status=status.HTTP_201_CREATED)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+        if not refresh_token:
+            return Response({'error': 'refresh token required'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except Exception:
+            return Response({'error': 'invalid refresh token'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+
+class SkillViewSet(viewsets.ModelViewSet):
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        q = self.request.query_params.get('q')
+        if q:
+            qs = qs.filter(name__icontains=q)
+        return qs

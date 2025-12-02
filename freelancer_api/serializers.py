@@ -2,6 +2,22 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import UserProfile, Skill, ProfileComparison, SWOTAnalysis, CareerRoadmap
 
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, min_length=8)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+    def create(self, validated_data):
+        user = User(
+            username=validated_data['username'],
+            email=validated_data.get('email')
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
@@ -26,8 +42,20 @@ class UserProfileSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         skill_ids = validated_data.pop('skill_ids', [])
-        profile = UserProfile.objects.create(**validated_data)
-        profile.skills.set(skill_ids)
+        # Ensure a single profile per user; update existing instead of duplicating
+        user = validated_data.get('user')
+        profile, created = UserProfile.objects.get_or_create(
+            user=user,
+            defaults=validated_data
+        )
+        if not created:
+            for attr, value in validated_data.items():
+                setattr(profile, attr, value)
+            profile.save()
+
+        if skill_ids is not None:
+            profile.skills.set(skill_ids)
+
         return profile
     
     def update(self, instance, validated_data):

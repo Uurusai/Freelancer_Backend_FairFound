@@ -1,0 +1,210 @@
+### Environment Variables (REST Client syntax)
+@baseUrl = http://localhost:8000
+@authToken = REPLACE_WITH_ACCESS_TOKEN
+@refreshToken = REPLACE_WITH_REFRESH_TOKEN
+
+############################################
+# AUTH ENDPOINTS
+############################################
+
+### Sign Up (returns access & refresh tokens)
+POST {{baseUrl}}/api/auth/signup/
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "email": "alice@example.com",
+  "password": "StrongPass123"
+}
+
+### Login (obtain pair tokens)
+POST {{baseUrl}}/api/auth/login/
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "password": "StrongPass123"
+}
+
+### Refresh Access Token
+POST {{baseUrl}}/api/auth/refresh/
+Content-Type: application/json
+
+{
+  "refresh": "{{refreshToken}}"
+}
+
+### Logout (blacklist refresh token)
+POST {{baseUrl}}/api/auth/logout/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "refresh": "{{refreshToken}}"
+}
+
+############################################
+# PROFILE ENDPOINTS (UserProfileViewSet)
+# Router base: /api/freelancers/profile/
+############################################
+
+### List current user's profiles (likely 1)
+GET {{baseUrl}}/api/freelancers/profile/
+Authorization: Bearer {{authToken}}
+
+### Create profile (skills via IDs)
+POST {{baseUrl}}/api/freelancers/profile/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "portfolio": "https://portfolio.example.com",
+  "bio": "Senior freelancer bio...",
+  "pricing": "120.00",
+  "skill_ids": [1,2,3],
+  "rating": 4.5
+}
+
+### Retrieve profile by ID
+GET {{baseUrl}}/api/freelancers/profile/1/
+Authorization: Bearer {{authToken}}
+
+### Update (PUT) profile
+PUT {{baseUrl}}/api/freelancers/profile/1/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "portfolio": "https://portfolio.example.com/v2",
+  "bio": "Updated bio",
+  "pricing": "140.00",
+  "skill_ids": [2,3],
+  "rating": 4.8
+}
+
+### Partial Update (PATCH) profile
+PATCH {{baseUrl}}/api/freelancers/profile/1/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "pricing": "150.00"
+}
+
+### Delete profile (use cautiously)
+DELETE {{baseUrl}}/api/freelancers/profile/1/
+Authorization: Bearer {{authToken}}
+
+############################################
+# SKILLS (Implicit via UserProfile skill_ids) - assume Skill model separate admin management
+# CRUD for Skill model
+############################################
+
+### List skills
+GET {{baseUrl}}/api/freelancers/skills/
+Authorization: Bearer {{authToken}}
+
+### Search skills by name
+GET {{baseUrl}}/api/freelancers/skills/?q=python
+Authorization: Bearer {{authToken}}
+
+### Create a skill
+POST {{baseUrl}}/api/freelancers/skills/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Python"
+}
+
+### Retrieve a skill
+GET {{baseUrl}}/api/freelancers/skills/1/
+Authorization: Bearer {{authToken}}
+
+### Update a skill (PUT)
+PUT {{baseUrl}}/api/freelancers/skills/1/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Python (Advanced)"
+}
+
+### Partial update a skill (PATCH)
+PATCH {{baseUrl}}/api/freelancers/skills/1/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Python3"
+}
+
+### Delete a skill
+DELETE {{baseUrl}}/api/freelancers/skills/1/
+Authorization: Bearer {{authToken}}
+
+############################################
+# PROFILE COMPARISON (ProfileComparisonViewSet)
+# Base: /api/freelancers/compare/
+############################################
+
+### List comparisons made by user (if filtered in queryset)
+GET {{baseUrl}}/api/freelancers/compare/
+Authorization: Bearer {{authToken}}
+
+### Compare profiles (custom action) - provide other profile ID
+POST {{baseUrl}}/api/freelancers/compare/compare/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "compare_with": 2
+}
+
+### Retrieve comparison by ID
+GET {{baseUrl}}/api/freelancers/compare/5/
+Authorization: Bearer {{authToken}}
+
+############################################
+# SWOT ANALYSIS (SWOTAnalysisViewSet)
+# Base: /api/freelancers/swot/
+############################################
+
+### Generate or fetch SWOT for current user (custom action)
+POST {{baseUrl}}/api/freelancers/swot/generate_swot/
+Authorization: Bearer {{authToken}}
+
+### Retrieve SWOT object by ID
+GET {{baseUrl}}/api/freelancers/swot/3/
+Authorization: Bearer {{authToken}}
+
+############################################
+# CAREER ROADMAP (CareerRoadmapViewSet)
+# Base: /api/freelancers/roadmap/
+############################################
+
+### Generate or fetch roadmap (custom action)
+POST {{baseUrl}}/api/freelancers/roadmap/generate_roadmap/
+Authorization: Bearer {{authToken}}
+
+### Retrieve roadmap by ID
+GET {{baseUrl}}/api/freelancers/roadmap/4/
+Authorization: Bearer {{authToken}}
+
+############################################
+# RANKING (RankingViewSet)
+# Base: /api/freelancers/rank/
+############################################
+
+### Get pseudo rank for current user
+GET {{baseUrl}}/api/freelancers/rank/get_rank/
+Authorization: Bearer {{authToken}}
+
+############################################
+# NOTES
+# - Replace placeholder IDs with actual resource IDs returned from creation endpoints.
+# - Ensure Skill objects exist (via admin) before assigning skill_ids.
+# - Auth required for all except signup & login.
+# - Tokens: ACCESS in Authorization header as: Bearer <token>.
+# - Use refreshed tokens promptly; old refresh tokens become blacklisted when rotated.
+############################################
