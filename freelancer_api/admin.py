@@ -1,23 +1,9 @@
-#not needed
+from django.contrib import admin
+from .models import FreelancerProfile, RoadmapMilestone, RankingSnapshot
 
-
-# from django.contrib import admin
-# from .models import Skill, UserProfile, ProfileComparison, SWOTAnalysis, CareerRoadmap
-
-# @admin.register(Skill)
-# class SkillAdmin(admin.ModelAdmin):
-# 	list_display = ("id", "name")
-# 	search_fields = ("name",)
-
-# @admin.register(UserProfile)
-# class UserProfileAdmin(admin.ModelAdmin):
-# 	list_display = ("id", "user", "pricing", "pseudo_rank", "rating")
-# 	search_fields = ("user__username", "user__email")
-# 	list_filter = ("rating",)
-
-# @admin.register(ProfileComparison)
-# class ProfileComparisonAdmin(admin.ModelAdmin):
-# 	list_display = ("id", "user_profile", "compare_with", "comparison_score", "created_at")
+admin.site.register(FreelancerProfile)
+admin.site.register(RoadmapMilestone)
+admin.site.register(RankingSnapshot)
 # 	search_fields = ("user_profile__user__username", "compare_with__user__username")
 # 	list_filter = ("created_at",)
 

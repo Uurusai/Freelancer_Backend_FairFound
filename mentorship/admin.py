@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import MentorshipRequest, MentorshipMessage
 
-# Register your models here.
+admin.site.register(MentorshipRequest)
+admin.site.register(MentorshipMessage)
